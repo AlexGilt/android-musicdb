@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Music App</string>
+
+    <string name="home_title_menu">Home</string>
+    <string name="artist_list_title">Artists</string>
+    <string name="songs_title_menu">Songs</string>
+    <string name="title_activity_artist_detail">ArtistDetailsActivity</string>
+
+    <string name="error_text">An error has occurred.</string>
+
+    <string name="artist_image_description">Image of %s</string>
+    <!--<string name="image_song_description">Song of %s</string>-->
+
+    <string name="artist_listeners">Listeners: %d</string>
+    <string name="similar_artists">Similar artists:</string>
+    <string name="favorite_button_text">%s was added in your favorites.</string>
+    <string name="undo">Undo</string>
+
+</resources>
