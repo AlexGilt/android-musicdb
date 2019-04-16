@@ -16,6 +16,7 @@ import ru.alexgiltd.musicdb.model.mapper.ArtistInfoResponseMapperKt;
 import ru.alexgiltd.musicdb.model.mapper.ArtistsResponseMapperKt;
 import ru.alexgiltd.musicdb.model.mapper.TrackInfoResponseMapperKt;
 import ru.alexgiltd.musicdb.model.mapper.TracksResponseMapperKt;
+import ru.alexgiltd.musicdb.model.remote.BaseResponse;
 
 @Singleton
 public class RepositoryImpl implements Repository {
@@ -30,38 +31,47 @@ public class RepositoryImpl implements Repository {
     @Override
     public Observable<List<SimpleArtistModel>> getArtistList(int limit) {
         return lastFmService.getArtistList(limit)
-                .filter(artistsResponse -> artistsResponse.getErrorCode() == 0)
+                .doOnNext(this::throwExceptionIfApiError)
                 .map(ArtistsResponseMapperKt::mapToSimplifiedArtistModelList);
     }
 
     @Override
     public Observable<List<TrackModel>> getTrackList(int limit) {
         return lastFmService.getTrackList(limit)
-                .filter(trackResponse -> trackResponse.getErrorCode() == 0)
+                .doOnNext(this::throwExceptionIfApiError)
                 .map(TracksResponseMapperKt::mapToTrackModelList);
     }
 
     @Override
     public Single<ArtistModel> getArtistDetailsById(String mbid) {
         return lastFmService.getArtistInfoByMbid(mbid)
-                .filter(artistInfoResponse -> artistInfoResponse.getErrorCode() == 0)
-                .toSingle()
+                .doOnSuccess(this::throwExceptionIfApiError)
                 .map(ArtistInfoResponseMapperKt::mapToArtistDetailModel);
     }
 
     @Override
     public Single<ArtistModel> getArtistDetailsByName(String artistName) {
         return lastFmService.getArtistInfoByName(artistName)
-                .filter(artistInfoResponse -> artistInfoResponse.getErrorCode() == 0)
-                .toSingle()
+                .doOnSuccess(this::throwExceptionIfApiError)
                 .map(ArtistInfoResponseMapperKt::mapToArtistDetailModel);
     }
 
     @Override
     public Single<TrackDetailsModel> getTrackDetailsByName(String artistName, String trackName) {
         return lastFmService.getTrackInfoByName(artistName, trackName)
-                .filter(trackInfoResponse -> trackInfoResponse.getMessage() == null)
-                .toSingle()
+                .doOnSuccess(this::throwExceptionIfApiError)
                 .map(TrackInfoResponseMapperKt::mapToTrackDetailsModel);
+    }
+
+    private void throwExceptionIfApiError(BaseResponse baseResponse) {
+        if (baseResponse.getErrorCode() != 0) {
+            throw new RuntimeException(
+                    String.format(
+                            "Error has occurred on server: Error code: %d, message: %s",
+                            baseResponse.getErrorCode(),
+                            baseResponse.getMessage()
+                    )
+            );
+        }
     }
 }
