@@ -30,7 +30,7 @@ class SongListPresenter @Inject constructor(private val repository: Repository)
 
         // TODO: change the inner logic of lastFm api hence the rest service count from 0,
         // so 40 is 39 exactly
-        val disposable = repository.getTrackList(39)
+        val disposable = repository.getTracks(39)
                 //                .flatMap(Observable::fromIterable)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -49,18 +49,18 @@ public class ArtistListPresenter extends BasePresenter<ArtistListView> {
 
         getViewState().onStartLoading();
 
-        Disposable disposable = repository.getArtistList(10)
-                .doOnNext(localDataSource::addArtists)
+        Disposable disposable = repository.getArtists(10)
+//                .doOnNext(localDataSource::addArtists)
                 .flatMap(Observable::fromIterable)
-                .flatMap(artist -> {
-                    if (artist.getMbid().isEmpty())
-                        return repository.getArtistDetailsByName(artist.getName()).toObservable();
-                    return repository.getArtistDetailsById(artist.getMbid()).toObservable();
-                })
+                .flatMap(artist -> artist.getMbid().isEmpty()
+                        ? repository.getArtistDetailsByName(artist.getName()).toObservable()
+                        : repository.getArtistDetailsByMbid(artist.getMbid()).toObservable()
+                )
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(artists -> {
+                .subscribe(
+                        artists -> {
                             getViewState().onFinishLoading();
                             this.artists.addAll(artists);
                             getViewState().showArtists(this.artists);
@@ -69,7 +69,8 @@ public class ArtistListPresenter extends BasePresenter<ArtistListView> {
                             getViewState().onFinishLoading();
                             getViewState().showError(error.getMessage());
                             Log.e(TAG, "loadArtistList(): ", error);
-                        });
+                        }
+                );
 
         unsubscribeOnDestroy(disposable);
 
