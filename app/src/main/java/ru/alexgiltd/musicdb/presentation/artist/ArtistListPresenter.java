@@ -50,7 +50,6 @@ public class ArtistListPresenter extends BasePresenter<ArtistListView> {
         getViewState().onStartLoading();
 
         Disposable disposable = repository.getArtists(10)
-//                .doOnNext(localDataSource::addArtists)
                 .flatMap(Observable::fromIterable)
                 .flatMap(artist -> artist.getMbid().isEmpty()
                         ? repository.getArtistDetailsByName(artist.getName()).toObservable()

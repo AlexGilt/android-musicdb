@@ -1,7 +1,7 @@
 package ru.alexgiltd.musicdb.data.local
 
+import android.util.Log
 import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import ru.alexgiltd.musicdb.model.SimpleArtistModel
 import ru.alexgiltd.musicdb.model.local.artist.ArtistLocal
 import ru.alexgiltd.musicdb.model.local.artist.ArtistWithImage
@@ -36,51 +36,41 @@ class LocalDataSourceImpl @Inject constructor(private val database: MusicDatabas
     override fun addArtists(artists: List<SimpleArtistModel>) {
 
         val localArtists = artists.map {
-            ArtistLocal(name = it.name, mbid = it.mbid, url = it.url)
+            val artist = ArtistLocal(name = it.name, mbid = it.mbid, url = it.url)
+            artist.images = it.images?.map { image ->
+                Image(artistId = 0, size = image.key, url = image.value)
+            }
+
+            return@map artist
         }
 
         val disposable = database.artistDao()
                 .addArtists(localArtists)
-                .subscribe { indices: List<Long> ->
-
-                    // TODO: withdraw this hack with variable type of data class
-                    val indexedArtists = localArtists.zip(indices) { artistLocal: ArtistLocal, i: Long ->
-                        artistLocal.id = i
+                .toObservable()
+                .flatMap { Observable.fromIterable(it) }
+                .zipWith(localArtists) { receivedIndex: Long, artist: ArtistLocal ->
+                    val copy = artist.copy(id = receivedIndex)
+                    copy.images = artist.images
+                    return@zipWith copy
+                }
+                .map { artistLocal ->
+                    artistLocal.images?.map {
+                        it.copy(artistId = artistLocal.id)
                     }
-
-                    // TODO: withdraw this hack with variable type of data class
-                    localArtists.zip(artists) { artistLocal, artistModel ->
-                        artistLocal.images = artistModel.images?.map {
-                            Image(artistId = artistLocal.id, size = it.key, url = it.value)
+                }
+                // adding images of artists to database
+                .flatMap { database.artistDao().addImages(it).toObservable() }
+                .subscribe(
+                        { imageIndices ->
+                            Log.d(TAG, "addArtists(): onNext()")
+                        },
+                        { error ->
+                            Log.e(TAG, "addArtists(): ", error)
+                        },
+                        {
+                            Log.d(TAG, "addArtists(): onComplete()")
                         }
-                    }
-
-                    addImagesForArtists(localArtists)
-
-                }
-
+                )
     }
 
-    private fun addImagesForArtists(localArtists: List<ArtistLocal>) {
-
-        localArtists.forEach {
-
-            it.images?.let { images ->
-                database.artistDao().addImages(images)
-                        .subscribeOn(Schedulers.io())
-//                        .doOnSuccess {
-//                            Log.d(TAG, "Images added: $it")
-//                        }
-                        .subscribe()
-            }
-
-        }
-
-/*        getAllArtists().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext {
-                    Log.d(TAG, "addArtists(): ${it}")
-                }
-                .subscribe()*/
-    }
 }

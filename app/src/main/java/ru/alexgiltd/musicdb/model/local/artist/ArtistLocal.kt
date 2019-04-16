@@ -17,6 +17,10 @@ data class ArtistLocal(
 ) {
     @Ignore
     var images: List<Image>? = null
+
+    override fun toString(): String {
+        return "ArtistLocal(id=$id, name='$name', mbid=$mbid, url='$url', images=$images)"
+    }
 }
 
 @Entity(tableName = "artist_image",

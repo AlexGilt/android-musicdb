@@ -2,6 +2,7 @@ package ru.alexgiltd.musicdb.data.repository
 
 import io.reactivex.Observable
 import io.reactivex.Single
+import ru.alexgiltd.musicdb.data.local.LocalDataSource
 import ru.alexgiltd.musicdb.data.remote.api.LastFmService
 import ru.alexgiltd.musicdb.model.ArtistModel
 import ru.alexgiltd.musicdb.model.SimpleArtistModel
@@ -20,12 +21,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RepositoryImpl @Inject constructor(private val lastFmService: LastFmService) : Repository {
+class RepositoryImpl @Inject constructor(
+        private val lastFmService: LastFmService,
+        private val localDataSource: LocalDataSource
+) : Repository {
 
     override fun getArtists(limit: Int): Observable<List<SimpleArtistModel>> {
+
+
         return lastFmService.getArtistList(limit)
                 .doOnNext(this::throwExceptionIfApiError)
                 .map(ArtistsResponse::mapToSimplifiedArtistModelList)
+                .doOnNext(localDataSource::addArtists)
     }
 
     override fun getTracks(limit: Int): Observable<List<TrackModel>> {
