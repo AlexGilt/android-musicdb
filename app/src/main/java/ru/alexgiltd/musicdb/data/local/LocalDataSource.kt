@@ -5,7 +5,7 @@ import ru.alexgiltd.musicdb.model.SimpleArtistModel
 
 interface LocalDataSource {
 
-    fun getAllArtists(): Observable<List<SimpleArtistModel>>
+    fun getArtists(limit: Int): Observable<List<SimpleArtistModel>>
 
     fun addArtists(artists: List<SimpleArtistModel>)
 }

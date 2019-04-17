@@ -28,11 +28,17 @@ class RepositoryImpl @Inject constructor(
 
     override fun getArtists(limit: Int): Observable<List<SimpleArtistModel>> {
 
-
-        return lastFmService.getArtistList(limit)
+        val remoteObservable = lastFmService.getArtistList(limit)
                 .doOnNext(this::throwExceptionIfApiError)
                 .map(ArtistsResponse::mapToSimplifiedArtistModelList)
                 .doOnNext(localDataSource::addArtists)
+
+        val localObservable = localDataSource.getArtists(limit)
+                .take(1)
+
+        return Observable.concat(localObservable, remoteObservable)
+                .filter { it.isNotEmpty() }
+                .take(1)
     }
 
     override fun getTracks(limit: Int): Observable<List<TrackModel>> {

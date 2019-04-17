@@ -14,24 +14,21 @@ const val TAG = "LocalDataSourceImpl"
 @Singleton
 class LocalDataSourceImpl @Inject constructor(private val database: MusicDatabase) : LocalDataSource {
 
-    override fun getAllArtists(): Observable<List<SimpleArtistModel>> {
-
-        return database.artistDao()
-                .getAllArtistsWithImages()
-                .map { artists: List<ArtistWithImage> ->
-                    artists.map {
-                        SimpleArtistModel(
-                            name = it.name,
-                            mbid = it.mbid,
-                            url = it.url,
-                            images = it.images.associate { image: Image ->
-                                image.size to image.url
-                            }
-                        )
-                    }
+    override fun getArtists(limit: Int): Observable<List<SimpleArtistModel>>
+            = database.artistDao()
+            .getArtistsWithImages(limit)
+            .map { artists: List<ArtistWithImage> ->
+                artists.map {
+                    SimpleArtistModel(
+                        name = it.name,
+                        mbid = it.mbid,
+                        url = it.url,
+                        images = it.images.associate { image: Image ->
+                            image.size to image.url
+                        }
+                    )
                 }
-
-    }
+            }
 
     override fun addArtists(artists: List<SimpleArtistModel>) {
 
