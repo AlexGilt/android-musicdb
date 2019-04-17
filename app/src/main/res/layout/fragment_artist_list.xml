@@ -6,13 +6,17 @@
     tools:context="ru.alexgiltd.musicdb.ui.artist.ArtistListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_artists"
+        android:id="@+id/recycler_artists"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         tools:listitem="@layout/item_artist" />
 
-    <include
-        android:id="@+id/fragment_artists_progress_bar"
-        layout="@layout/layout_loading" />
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/progress_bar_artists"
+        style="?android:attr/android:progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:indeterminate="true" />
 </FrameLayout>
