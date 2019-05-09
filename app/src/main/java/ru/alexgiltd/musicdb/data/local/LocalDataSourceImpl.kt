@@ -2,10 +2,13 @@ package ru.alexgiltd.musicdb.data.local
 
 import android.util.Log
 import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import ru.alexgiltd.musicdb.model.ArtistModel
 import ru.alexgiltd.musicdb.model.SimpleArtistModel
+import ru.alexgiltd.musicdb.model.local.artist.ArtistInfoLocal
 import ru.alexgiltd.musicdb.model.local.artist.ArtistLocal
-import ru.alexgiltd.musicdb.model.local.artist.ArtistWithImage
-import ru.alexgiltd.musicdb.model.local.artist.Image
+import ru.alexgiltd.musicdb.model.mapper.simpleArtistModelToArtistLocal
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,60 +17,104 @@ const val TAG = "LocalDataSourceImpl"
 @Singleton
 class LocalDataSourceImpl @Inject constructor(private val database: MusicDatabase) : LocalDataSource {
 
-    override fun getArtists(limit: Int): Observable<List<SimpleArtistModel>>
-            = database.artistDao()
-            .getArtistsWithImages(limit)
-            .map { artists: List<ArtistWithImage> ->
-                artists.map {
-                    SimpleArtistModel(
-                        name = it.name,
-                        mbid = it.mbid,
-                        url = it.url,
-                        images = it.images.associate { image: Image ->
-                            image.size to image.url
-                        }
+    override fun addArtistDetails(artistModel: ArtistModel) {
+
+        database.artistDao()
+                .findArtistByName(artistModel.name)
+                .subscribeOn(Schedulers.io())
+                .toObservable()
+                .map {
+                    val artistInfo = ArtistInfoLocal(
+                            artistId = it.id,
+                            isStreamable = artistModel.isStreamable,
+                            isOnTour = artistModel.isOnTour,
+                            listeners = artistModel.listeners,
+                            playcount = artistModel.playcount,
+                            published = artistModel.published,
+                            summary = artistModel.summary,
+                            content = artistModel.content
                     )
+                    artistInfo.similarArtists = artistModel.similarArtists.map(::simpleArtistModelToArtistLocal)
+
+                    artistInfo
                 }
-            }
+                .flatMap { artistInfo ->
+                    addArtistsObs(artistInfo.similarArtists!!)
+                }
+//                .flatMap {
+//                    database.artistDao().addArtistInfo(it)
+//                            .subscribeOn(Schedulers.io())
+//                }
+                .doOnError { Log.e(TAG, "addArtistDetails(): ", it) }
+                .subscribe()
+
+
+    }
+
+    override fun getArtistDetailsByName(artistName: String): Single<ArtistModel> {
+        TODO("not implemented")
+    }
+
+    override fun getArtists(limit: Int): Observable<List<SimpleArtistModel>> {
+        return database.artistDao()
+                .getArtistsWithImages(limit)
+                .concatMap { list ->
+                    Observable.fromIterable(list)
+                            .map { artistWithImagesLocal ->
+                                SimpleArtistModel(
+                                    name = artistWithImagesLocal.name,
+                                    mbid = artistWithImagesLocal.mbid,
+                                    url = artistWithImagesLocal.url,
+                                    images = artistWithImagesLocal.images.associate { imageLocal ->
+                                        imageLocal.size to imageLocal.url
+                                    }
+                                )
+                            }
+                            .toList()
+                            .toObservable()
+                }
+    }
+
 
     override fun addArtists(artists: List<SimpleArtistModel>) {
 
-        val localArtists = artists.map {
-            val artist = ArtistLocal(name = it.name, mbid = it.mbid, url = it.url)
-            artist.images = it.images?.map { image ->
-                Image(artistId = 0, size = image.key, url = image.value)
-            }
+        val localArtists = artists.map(::simpleArtistModelToArtistLocal)
 
-            return@map artist
-        }
-
-        val disposable = database.artistDao()
+        database.artistDao()
                 .addArtists(localArtists)
                 .toObservable()
                 .flatMap { Observable.fromIterable(it) }
                 .zipWith(localArtists) { receivedIndex: Long, artist: ArtistLocal ->
-                    val copy = artist.copy(id = receivedIndex)
-                    copy.images = artist.images
-                    return@zipWith copy
-                }
-                .map { artistLocal ->
-                    artistLocal.images?.map {
-                        it.copy(artistId = artistLocal.id)
+
+                    val refreshedArtist = artist.copy(id = receivedIndex)
+                    refreshedArtist.images = artist.images?.map {
+                        it.copy(artistId = refreshedArtist.id)
                     }
+
+                    refreshedArtist
                 }
                 // adding images of artists to database
-                .flatMap { database.artistDao().addImages(it).toObservable() }
-                .subscribe(
-                        { imageIndices ->
-                            Log.d(TAG, "addArtists(): onNext()")
-                        },
-                        { error ->
-                            Log.e(TAG, "addArtists(): ", error)
-                        },
-                        {
-                            Log.d(TAG, "addArtists(): onComplete()")
-                        }
-                )
+                .flatMap { database.artistDao().addImages(it.images!!).toObservable() }
+                .doOnError { Log.e(TAG, "addArtists(): ", it) }
+                .subscribe()
     }
 
+    private fun addArtistsObs(artists: List<ArtistLocal>): Observable<ArtistLocal> {
+
+        return database.artistDao()
+                .addArtists(artists)
+                .toObservable()
+                .flatMap { list ->
+                    Observable.fromIterable(list)
+                            .zipWith(artists) { receivedIndex, artist ->
+
+                                val refreshedArtist = artist.copy(id = receivedIndex)
+                                refreshedArtist.images = artist.images?.map {
+                                    it.copy(artistId = refreshedArtist.id)
+                                }
+
+                                refreshedArtist
+                            }
+                }
+    }
 }
