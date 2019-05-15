@@ -34,7 +34,7 @@ class ArtistListFragment : MvpAppCompatFragment(), ArtistListView {
     fun providePresenter(): ArtistListPresenter? = presenterProvider.get()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        App.getAppComponent()
+        App.appComponent
                 .inject(this)
         super.onCreate(savedInstanceState)
     }

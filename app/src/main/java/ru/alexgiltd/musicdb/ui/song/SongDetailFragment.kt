@@ -32,7 +32,7 @@ class SongDetailFragment : MvpAppCompatFragment(), SongDetailsView {
     fun providePresenter(): SongDetailsPresenter? = presenterProvider.get()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        App.getAppComponent()
+        App.appComponent
                 .inject(this)
         super.onCreate(savedInstanceState)
     }

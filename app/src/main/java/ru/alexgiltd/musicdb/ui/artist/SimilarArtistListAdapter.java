@@ -6,11 +6,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
+
 import ru.alexgiltd.musicdb.R;
 import ru.alexgiltd.musicdb.model.SimpleArtistModel;
 import ru.alexgiltd.musicdb.util.adapter.BaseRecyclerAdapter;
