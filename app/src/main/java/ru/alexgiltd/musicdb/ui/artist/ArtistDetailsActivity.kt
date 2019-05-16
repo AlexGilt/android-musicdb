@@ -21,7 +21,7 @@ class ArtistDetailsActivity : AppCompatActivity() {
         }
 
         val fragment = ArtistDetailsFragment.newInstance(
-                extras?.getString(ArtistDetailsFragment.ARTIST_DETAILS_ARG_STRING)
+                extras?.getString(ArtistDetailsFragment.ARTIST_DETAILS_ARG_STRING)!!
         )
 
         val fragmentManager = supportFragmentManager

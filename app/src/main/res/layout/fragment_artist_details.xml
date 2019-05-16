@@ -8,7 +8,7 @@
     tools:context=".ui.artist.ArtistDetailsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:fitsSystemWindows="true"
@@ -27,7 +27,7 @@
             tools:title="@tools:sample/full_names">
 
             <ImageView
-                android:id="@+id/toolbar_image_main"
+                android:id="@+id/image_artist_details"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -82,10 +82,13 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <include
+    <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/progressbar_artist_details"
-        layout="@layout/layout_loading"
-        app:layout_anchor="@id/content" />
+        style="?android:attr/android:progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:indeterminate="true" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_add_to_favorites"
