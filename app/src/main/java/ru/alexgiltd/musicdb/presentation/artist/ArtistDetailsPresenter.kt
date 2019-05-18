@@ -1,6 +1,5 @@
 package ru.alexgiltd.musicdb.presentation.artist
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -9,6 +8,7 @@ import ru.alexgiltd.musicdb.model.ArtistModel
 import ru.alexgiltd.musicdb.model.SimpleArtistModel
 import ru.alexgiltd.musicdb.util.BasePresenter
 import ru.alexgiltd.musicdb.util.Constants.EXTRA_LARGE_IMAGE
+import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
@@ -57,9 +57,9 @@ class ArtistDetailsPresenter @Inject constructor(
                             showData()
                         },
                         { error ->
+                            Timber.e(error, "loadArtistDetails: ")
                             viewState.onFinishLoading()
-                            Log.e(TAG, "loadArtistDetails: ", error)
-                            viewState.showError(error.message!!)
+                            viewState.showError(error.message ?: "")
                         }
                 )
 
@@ -67,9 +67,4 @@ class ArtistDetailsPresenter @Inject constructor(
 
     }
 
-    companion object {
-
-        @JvmStatic
-        private val TAG = ArtistDetailsPresenter::class.java.simpleName
-    }
 }

@@ -9,6 +9,7 @@ import ru.alexgiltd.musicdb.model.SimpleArtistModel
 import ru.alexgiltd.musicdb.model.local.artist.ArtistInfoLocal
 import ru.alexgiltd.musicdb.model.local.artist.ArtistLocal
 import ru.alexgiltd.musicdb.model.mapper.simpleArtistModelToArtistLocal
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -45,7 +46,7 @@ class LocalDataSourceImpl @Inject constructor(private val database: MusicDatabas
 //                    database.artistDao().addArtistInfo(it)
 //                            .subscribeOn(Schedulers.io())
 //                }
-                .doOnError { Log.e(TAG, "addArtistDetails(): ", it) }
+                .doOnError { throwable -> Timber.e(throwable, "addArtistDetails(): ") }
                 .subscribe()
 
 
@@ -95,7 +96,7 @@ class LocalDataSourceImpl @Inject constructor(private val database: MusicDatabas
                 }
                 // adding images of artists to database
                 .flatMap { database.artistDao().addImages(it.images!!).toObservable() }
-                .doOnError { Log.e(TAG, "addArtists(): ", it) }
+                .doOnError { throwable -> Timber.e(throwable, "addArtists(): ") }
                 .subscribe()
     }
 

@@ -72,4 +72,7 @@ dependencies {
     // Rx
     implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
+
+    // Logger
+    implementation "com.jakewharton.timber:timber:$timber"
 }

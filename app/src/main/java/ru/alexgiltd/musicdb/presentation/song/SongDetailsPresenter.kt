@@ -4,8 +4,8 @@ import com.arellomobile.mvp.InjectViewState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.alexgiltd.musicdb.data.repository.Repository
-import ru.alexgiltd.musicdb.model.TrackDetailsModel
 import ru.alexgiltd.musicdb.util.BasePresenter
+import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
@@ -26,10 +26,11 @@ class SongDetailsPresenter @Inject constructor(private val repository: Repositor
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { trackDetails: TrackDetailsModel ->
-                            viewState.showSongName(trackDetails.name)
+                        { trackDetailsModel ->
+                            viewState.showSongName(trackDetailsModel.name)
                         },
-                        { error: Throwable ->
+                        { error ->
+                            Timber.e(error)
                             viewState.showError()
                         }
                 )

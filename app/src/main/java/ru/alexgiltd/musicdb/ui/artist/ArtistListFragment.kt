@@ -77,9 +77,6 @@ class ArtistListFragment : MvpAppCompatFragment(), ArtistListView {
     }
 
     companion object {
-
-        const val TAG = "ArtistListFragment"
-
         @JvmStatic
         fun newInstance(): ArtistListFragment = ArtistListFragment()
     }

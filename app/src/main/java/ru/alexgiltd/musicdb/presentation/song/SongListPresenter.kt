@@ -1,16 +1,13 @@
 package ru.alexgiltd.musicdb.presentation.song
 
-import android.util.Log
-
 import com.arellomobile.mvp.InjectViewState
-
-import javax.inject.Inject
-
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.alexgiltd.musicdb.data.repository.Repository
 import ru.alexgiltd.musicdb.model.TrackModel
 import ru.alexgiltd.musicdb.util.BasePresenter
+import timber.log.Timber
+import javax.inject.Inject
 
 @InjectViewState
 class SongListPresenter @Inject constructor(private val repository: Repository)
@@ -26,21 +23,18 @@ class SongListPresenter @Inject constructor(private val repository: Repository)
 
     private fun loadTrackList() {
 
-        viewState.onStartLoading()
-
-        // TODO: change the inner logic of lastFm api hence the rest service count from 0,
-        // so 40 is 39 exactly
         val disposable = repository.getTracks(39)
                 //                .flatMap(Observable::fromIterable)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { viewState.onStartLoading() }
                 .subscribe(
                         { tracks ->
                             viewState.onFinishLoading()
                             viewState.showSongs(tracks)
                         },
                         { error ->
-                            Log.e(TAG, "loadTrackList(): ", error)
+                            Timber.e(error, "loadTrackList(): ")
                             viewState.onFinishLoading()
                             viewState.showError(error.message ?: "")
                         })
@@ -48,7 +42,4 @@ class SongListPresenter @Inject constructor(private val repository: Repository)
         unsubscribeOnDestroy(disposable)
     }
 
-    companion object {
-        const val TAG = "SongListPresenter"
-    }
 }

@@ -67,7 +67,6 @@ class SongDetailFragment : MvpAppCompatFragment(), SongDetailsView {
     }
 
     companion object {
-        const val TAG = "SongDetailFragment"
         const val SONG_DETAILS_ARG = "song_details_arg_name"
 
         @JvmStatic

@@ -3,9 +3,9 @@ package ru.alexgiltd.musicdb.ui.artist
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import ru.alexgiltd.musicdb.R
+import timber.log.Timber
 
 
 class ArtistDetailsActivity : AppCompatActivity() {
@@ -16,7 +16,7 @@ class ArtistDetailsActivity : AppCompatActivity() {
 
         val extras = intent?.extras
         if (extras == null) {
-            Log.e(TAG, "onCreate: extras is null")
+            Timber.e("onCreate: extras is null")
             finish()
         }
 
@@ -34,9 +34,6 @@ class ArtistDetailsActivity : AppCompatActivity() {
     }
 
     companion object {
-
-        private val TAG = ArtistDetailsActivity::class.java.simpleName
-
         @JvmStatic
         fun start(activity: Activity, artistName: String) {
             val intent = Intent(activity, ArtistDetailsActivity::class.java)

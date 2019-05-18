@@ -6,19 +6,25 @@ import com.squareup.picasso.Picasso
 
 import ru.alexgiltd.musicdb.di.ApplicationComponent
 import ru.alexgiltd.musicdb.di.DaggerApplicationComponent
+import timber.log.Timber
 
 class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        daggerInit()
-
-        picassoInit()
-
+        initLogger()
+        initDagger()
+        initPicasso()
     }
 
-    private fun daggerInit() {
+    private fun initLogger() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+    }
+
+    private fun initDagger() {
         appComponent = DaggerApplicationComponent.builder()
                 .applicationContext(applicationContext)
                 .build()
@@ -26,7 +32,7 @@ class App : Application() {
         appComponent.inject(this)
     }
 
-    private fun picassoInit() {
+    private fun initPicasso() {
         Picasso.setSingletonInstance(Picasso.Builder(this)
                 .indicatorsEnabled(true)
                 .build()

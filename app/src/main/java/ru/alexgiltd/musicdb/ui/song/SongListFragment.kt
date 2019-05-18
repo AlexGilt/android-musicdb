@@ -77,9 +77,6 @@ class SongListFragment : MvpAppCompatFragment(), SongListView {
     }
 
     companion object {
-
-        const val TAG = "SongListFragment"
-
         @JvmStatic
         fun newInstance(): SongListFragment {
             return SongListFragment()
