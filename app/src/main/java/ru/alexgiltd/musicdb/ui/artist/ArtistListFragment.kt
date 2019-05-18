@@ -44,16 +44,20 @@ class ArtistListFragment : MvpAppCompatFragment(), ArtistListView {
 
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
 
+        toolbar.title = v.context.getString(R.string.artist_list_title)
+
         recycler_artists.layoutManager = LinearLayoutManager(requireActivity())
         artistsAdapter.onItemClickListener = presenter::onItemClicked
         recycler_artists.adapter = artistsAdapter
         recycler_artists.setHasFixedSize(true)
-
     }
 
     override fun showError(message: String) {
-        Snackbar.make(requireView(), requireContext().getText(R.string.error_text), Snackbar.LENGTH_LONG)
-                .show()
+        Snackbar.make(
+                requireView(),
+                requireContext().getText(R.string.error_text),
+                Snackbar.LENGTH_LONG
+        ).show()
     }
 
     override fun onStartLoading() {

@@ -43,10 +43,11 @@ class SongListFragment : MvpAppCompatFragment(), SongListView {
             inflater.inflate(R.layout.fragment_song_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        toolbar.title = view.context.getString(R.string.songs_title_menu)
+
         recycler_song_list.layoutManager = LinearLayoutManager(requireActivity())
-
         songsAdapter.onItemClickListener = presenter::onSongsItemClicked
-
         recycler_song_list.adapter = songsAdapter
         recycler_song_list.setHasFixedSize(true)
     }
