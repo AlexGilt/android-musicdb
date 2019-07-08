@@ -16,25 +16,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            openFragment(this, HomeFragment.newInstance(), HOME_FRAGMENT)
+            openFragment(HomeFragment.newInstance(), HOME_FRAGMENT)
         }
 
-        bottomNavigationInit()
+        initBottomNavigation()
     }
 
-    private fun bottomNavigationInit() {
+    private fun initBottomNavigation() {
         main_bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home_menu -> {
-                    openFragment(this, HomeFragment.newInstance(), HOME_FRAGMENT)
+                    openFragment(HomeFragment.newInstance(), HOME_FRAGMENT)
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.artists_menu -> {
-                    openFragment(this, ArtistListFragment.newInstance(), ARTIST_LIST_FRAGMENT)
+                    openFragment(ArtistListFragment.newInstance(), ARTIST_LIST_FRAGMENT)
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.songs_menu -> {
-                    openFragment(this, SongListFragment.newInstance(), SONG_LIST_FRAGMENT)
+                    openFragment(SongListFragment.newInstance(), SONG_LIST_FRAGMENT)
                     return@setOnNavigationItemSelectedListener true
                 }
                 else -> false
@@ -48,9 +48,9 @@ class MainActivity : AppCompatActivity() {
         const val ARTIST_LIST_FRAGMENT = "artistListFragment"
         const val SONG_LIST_FRAGMENT = "songFragment"
 
-        fun openFragment(activity: AppCompatActivity, fragment: Fragment, fragmentTag: String) {
+        fun AppCompatActivity.openFragment(fragment: Fragment, fragmentTag: String) {
 
-            val fragmentManager = activity.supportFragmentManager
+            val fragmentManager = supportFragmentManager
 
             var createdFragment = fragmentManager.findFragmentByTag(fragmentTag)
             if (createdFragment == null) {
