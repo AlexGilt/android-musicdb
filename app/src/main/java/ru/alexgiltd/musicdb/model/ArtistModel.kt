@@ -4,7 +4,7 @@ data class ArtistModel(
         val name: String,
         val mbid: String = "",
         val url: String,
-        val images: Map<String, String>?,
+        val imageUrl: String,
         val isStreamable: Boolean,
         val isOnTour: Boolean,
         val listeners: Long,

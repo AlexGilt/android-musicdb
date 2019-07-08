@@ -12,9 +12,7 @@ fun artistModelToArtistLocal(artistModel: ArtistModel): ArtistLocal {
         mbid = if (artistModel.mbid.isNotEmpty()) artistModel.mbid else null,
         url = artistModel.url
     )
-    artistLocal.images = artistModel.images?.map {
-        ImageLocal(size = it.key, url = it.value)
-    }
+    artistLocal.images = MutableList(1) { ImageLocal(size = "", url = artistModel.imageUrl)}
 
     return artistLocal
 }

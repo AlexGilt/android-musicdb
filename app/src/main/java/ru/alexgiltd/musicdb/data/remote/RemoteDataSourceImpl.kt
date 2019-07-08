@@ -12,7 +12,6 @@ import ru.alexgiltd.musicdb.model.mapper.mapToSimplifiedArtistModelList
 import ru.alexgiltd.musicdb.model.mapper.mapToTrackDetailsModel
 import ru.alexgiltd.musicdb.model.mapper.mapToTrackModelList
 import ru.alexgiltd.musicdb.model.remote.BaseResponse
-import ru.alexgiltd.musicdb.model.remote.artistinfo.ArtistInfoResponse
 import ru.alexgiltd.musicdb.model.remote.artists.ArtistsResponse
 import ru.alexgiltd.musicdb.model.remote.trackinfo.TrackInfoResponse
 import ru.alexgiltd.musicdb.model.remote.tracks.TracksResponse
@@ -39,13 +38,13 @@ class RemoteDataSourceImpl @Inject constructor(
     override fun getArtistDetailsByMbid(mbid: String): Single<ArtistModel> {
         return lastFmService.getArtistInfoByMbid(mbid)
                 .doOnSuccess(this::throwExceptionIfApiError)
-                .map(ArtistInfoResponse::mapToArtistDetailModel)
+                .map(::mapToArtistDetailModel)
     }
 
     override fun getArtistDetailsByName(artistName: String): Single<ArtistModel> {
         return lastFmService.getArtistInfoByName(artistName)
                 .doOnSuccess(this::throwExceptionIfApiError)
-                .map(ArtistInfoResponse::mapToArtistDetailModel)
+                .map(::mapToArtistDetailModel)
     }
 
     override fun getTrackDetailsByName(artistName: String, trackName: String): Single<TrackDetailsModel> {

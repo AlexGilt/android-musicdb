@@ -3,30 +3,29 @@ package ru.alexgiltd.musicdb.model.mapper
 import ru.alexgiltd.musicdb.model.ArtistModel
 import ru.alexgiltd.musicdb.model.SimpleArtistModel
 import ru.alexgiltd.musicdb.model.TagModel
-import ru.alexgiltd.musicdb.model.remote.artistinfo.ArtistInfoResponse
-import ru.alexgiltd.musicdb.model.remote.artistinfo.ImageDTO
-import ru.alexgiltd.musicdb.model.remote.artistinfo.SimpleArtistDTO
-import ru.alexgiltd.musicdb.model.remote.artistinfo.TagDTO
+import ru.alexgiltd.musicdb.model.remote.artistinfo.*
+import ru.alexgiltd.musicdb.util.Constants
 
-fun ArtistInfoResponse.mapToArtistDetailModel(): ArtistModel {
+fun mapToArtistDetailModel(response: ArtistInfoResponse): ArtistModel {
 
     return ArtistModel(
-            mbid = artistDetailsDTO?.mbid ?: "",
-            name = artistDetailsDTO.name,
-            url = artistDetailsDTO.url,
-            listeners = artistDetailsDTO.statsDTO.listeners.toLong(),
-            playcount = artistDetailsDTO.statsDTO.playcount.toLong(),
-            isOnTour = artistDetailsDTO.ontour == "1",
-            isStreamable = artistDetailsDTO.streamable == "1",
-            content = artistDetailsDTO.biographyDTO.content,
-            summary = artistDetailsDTO.biographyDTO.summary,
-            published = artistDetailsDTO.biographyDTO.published,
+            mbid = response.artistDetailsDTO?.mbid ?: "",
+            name = response.artistDetailsDTO.name,
+            url = response.artistDetailsDTO.url,
+            listeners = response.artistDetailsDTO.statsDTO.listeners.toLong(),
+            playcount = response.artistDetailsDTO.statsDTO.playcount.toLong(),
+            isOnTour = response.artistDetailsDTO.ontour == "1",
+            isStreamable = response.artistDetailsDTO.streamable == "1",
+            content = response.artistDetailsDTO.biographyDTO.content,
+            summary = response.artistDetailsDTO.biographyDTO.summary,
+            published = response.artistDetailsDTO.biographyDTO.published,
 
-            images = artistDetailsDTO.imageDTO?.associate { imageDto: ImageDTO ->
-                imageDto.size to imageDto.text
-            },
+            imageUrl = findArtistInfoImageDtoBySize(
+                    response.artistDetailsDTO.imageDTO,
+                    Constants.LARGE_IMAGE
+            ) ?: throw UnsupportedOperationException(),
 
-            similarArtists = artistDetailsDTO.similarArtistsDTO.artist.map { sArtistDto: SimpleArtistDTO ->
+            similarArtists = response.artistDetailsDTO.similarArtistsDTO.artist.map { sArtistDto: SimpleArtistDTO ->
                 SimpleArtistModel(
                         name = sArtistDto.name,
                         url = sArtistDto.url,
@@ -36,11 +35,19 @@ fun ArtistInfoResponse.mapToArtistDetailModel(): ArtistModel {
                 )
             },
 
-            tags = artistDetailsDTO.tagsDTO.tagDTO.map { tagDto: TagDTO ->
+            tags = response.artistDetailsDTO.tagsDTO.tagDTO.map { tagDto: TagDTO ->
                 TagModel(
                         name = tagDto.name,
                         url = tagDto.url
                 )
             }
     )
+}
+
+fun findArtistInfoImageDtoBySize(images: List<ImageDTO>, imageSize: String): String? {
+    for (imageDTO in images) {
+        if (imageDTO.size == imageSize)
+            return imageDTO.text
+    }
+    return null
 }

@@ -94,7 +94,7 @@ class LocalDataSourceImpl @Inject constructor(private val database: MusicDatabas
 
                     refreshedArtist
                 }
-                // adding images of artists to database
+                // adding imageUrl of artists to database
                 .flatMap { database.artistDao().addImages(it.images!!).toObservable() }
                 .doOnError { throwable -> Timber.e(throwable, "addArtists(): ") }
                 .subscribe()

@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import ru.alexgiltd.musicdb.R
 import ru.alexgiltd.musicdb.model.ArtistModel
-import ru.alexgiltd.musicdb.util.Constants.LARGE_IMAGE
 
 class ArtistListAdapter : ListAdapter<ArtistModel, ArtistListAdapter.ViewHolder>(DIFF_CALLBACK) {
 
@@ -55,7 +54,7 @@ class ArtistListAdapter : ListAdapter<ArtistModel, ArtistListAdapter.ViewHolder>
                     artist.name
             )
             Picasso.get()
-                    .load(artist.images?.get(LARGE_IMAGE))
+                    .load(artist.imageUrl)
                     .fit()
                     .centerCrop()
                     .into(artistImage)

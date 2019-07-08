@@ -7,7 +7,6 @@ import ru.alexgiltd.musicdb.data.repository.Repository
 import ru.alexgiltd.musicdb.model.ArtistModel
 import ru.alexgiltd.musicdb.model.SimpleArtistModel
 import ru.alexgiltd.musicdb.util.BasePresenter
-import ru.alexgiltd.musicdb.util.Constants.EXTRA_LARGE_IMAGE
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -40,7 +39,7 @@ class ArtistDetailsPresenter @Inject constructor(
     private fun showData() {
         viewState.showArtistName(artist.name)
         viewState.showArtistDescription(artist.content)
-        viewState.showArtistImage(artist.images?.get(EXTRA_LARGE_IMAGE)!!)
+        viewState.showArtistImage(artist.imageUrl)
         viewState.showSimilarArtists(artist.similarArtists)
     }
 
