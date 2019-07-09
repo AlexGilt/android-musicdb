@@ -40,8 +40,7 @@ class ArtistDetailsFragment : MvpAppCompatFragment(), ArtistDetailsView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        App.appComponent
-                .inject(this)
+        App.appComponent.inject(this)
         super.onCreate(savedInstanceState)
     }
 
@@ -50,13 +49,17 @@ class ArtistDetailsFragment : MvpAppCompatFragment(), ArtistDetailsView {
 
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
 
+        initRecycler()
+
+        btn_add_to_favorites.setOnClickListener { view -> presenter.onFavoriteBtnClicked() }
+    }
+
+    private fun initRecycler() {
         recycler_similar_artist_list.layoutManager = LinearLayoutManager(
-                activity, LinearLayoutManager.HORIZONTAL, false
+                requireActivity(), LinearLayoutManager.HORIZONTAL, false
         )
         recycler_similar_artist_list.adapter = similarArtistsAdapter
         similarArtistsAdapter.onItemClickListener = presenter::onSimilarArtistItemClicked
-
-        btn_add_to_favorites.setOnClickListener { view -> presenter.onFavoriteBtnClicked() }
     }
 
     override fun showArtistName(artistName: String) {

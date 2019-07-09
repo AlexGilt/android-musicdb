@@ -33,8 +33,7 @@ class ArtistListFragment : MvpAppCompatFragment(), ArtistListView {
     fun providePresenter(): ArtistListPresenter? = presenterProvider.get()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        App.appComponent
-                .inject(this)
+        App.appComponent.inject(this)
         super.onCreate(savedInstanceState)
     }
 
@@ -46,9 +45,13 @@ class ArtistListFragment : MvpAppCompatFragment(), ArtistListView {
 
         toolbar.title = v.context.getString(R.string.artist_list_title)
 
+        initRecycler()
+    }
+
+    private fun initRecycler() {
         recycler_artists.layoutManager = LinearLayoutManager(requireActivity())
-        artistsAdapter.onItemClickListener = presenter::onItemClicked
         recycler_artists.adapter = artistsAdapter
+        artistsAdapter.onItemClickListener = presenter::onItemClicked
         recycler_artists.setHasFixedSize(true)
     }
 

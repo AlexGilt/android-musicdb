@@ -16,7 +16,6 @@ class ArtistDetailsPresenter @Inject constructor(
 ) : BasePresenter<ArtistDetailsView>() {
 
     private var artistName: String? = null
-    // TODO: make the field without "lateinit" modifier
     private lateinit var artist: ArtistModel
 
     override fun onFirstViewAttach() {
@@ -44,7 +43,6 @@ class ArtistDetailsPresenter @Inject constructor(
     }
 
     private fun loadArtistDetails() {
-
         val disposable = repository.getArtistDetailsByName(artistName!!)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -63,7 +61,5 @@ class ArtistDetailsPresenter @Inject constructor(
                 )
 
         unsubscribeOnDestroy(disposable)
-
     }
-
 }
