@@ -35,10 +35,8 @@ class App : Application(), HasAndroidInjector {
     }
 
     private fun initDagger() {
-        appComponent = DaggerApplicationComponent.builder()
-                .applicationContext(applicationContext)
-                .build()
-
+        appComponent = DaggerApplicationComponent.factory()
+                .create(this)
         appComponent.inject(this)
     }
 

@@ -1,4 +1,4 @@
-package ru.alexgiltd.musicdb.di;
+package ru.alexgiltd.musicdb.di.fragment;
 
 import dagger.Subcomponent;
 import dagger.android.AndroidInjector;

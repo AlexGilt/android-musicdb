@@ -1,4 +1,4 @@
-package ru.alexgiltd.musicdb.di;
+package ru.alexgiltd.musicdb.di.fragment;
 
 import dagger.Binds;
 import dagger.Module;
@@ -8,7 +8,7 @@ import dagger.multibindings.IntoMap;
 import ru.alexgiltd.musicdb.ui.artist.ArtistListFragment;
 
 @Module(subcomponents = ArtistListFragmentComponent.class)
-abstract class ArtistListFragmentModule {
+public abstract class ArtistListFragmentModule {
 
     @Binds
     @IntoMap

@@ -1,6 +1,7 @@
 package ru.alexgiltd.musicdb.ui.artist
 
 
+import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -33,15 +34,13 @@ class ArtistDetailsFragment : MvpAppCompatFragment(), ArtistDetailsView {
     internal lateinit var presenter: ArtistDetailsPresenter
 
     @ProvidePresenter
-    fun providePresenter(): ArtistDetailsPresenter {
-        val presenter = presenterProvider.get()
-        presenter.setArtistDetailsModel(arguments?.getString(ARTIST_DETAILS_ARG_STRING)!!)
-        return presenter
-    }
+    fun providePresenter(): ArtistDetailsPresenter = presenterProvider.get()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        App.appComponent.inject(this)
-        super.onCreate(savedInstanceState)
+    override fun onAttach(context: Context) {
+        App.appComponent.ArtistDetailsFragmentComponentFactory()
+                .create(arguments?.getString(ARTIST_DETAILS_ARG_STRING))
+                .inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, state: Bundle?): View? =
@@ -103,13 +102,13 @@ class ArtistDetailsFragment : MvpAppCompatFragment(), ArtistDetailsView {
     }
 
     override fun onStartLoading() {
-        content.visibility = View.GONE
-        progressbar_artist_details.show()
+        content.visibility = View.INVISIBLE
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun onFinishLoading() {
         content.visibility = View.VISIBLE
-        progressbar_artist_details.hide()
+        progressBar.visibility = View.INVISIBLE
     }
 
     override fun openArtistDetails(artistName: String) {
