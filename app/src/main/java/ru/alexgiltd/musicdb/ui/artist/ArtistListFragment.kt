@@ -1,5 +1,6 @@
 package ru.alexgiltd.musicdb.ui.artist
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.google.android.material.snackbar.Snackbar
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_artist_list.*
-import ru.alexgiltd.musicdb.App
 import ru.alexgiltd.musicdb.R
 import ru.alexgiltd.musicdb.model.ArtistModel
 import ru.alexgiltd.musicdb.presentation.artist.ArtistListPresenter
@@ -32,9 +33,9 @@ class ArtistListFragment : MvpAppCompatFragment(), ArtistListView {
     @ProvidePresenter
     fun providePresenter(): ArtistListPresenter? = presenterProvider.get()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        App.appComponent.inject(this)
-        super.onCreate(savedInstanceState)
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

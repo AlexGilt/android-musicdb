@@ -18,7 +18,8 @@ import ru.alexgiltd.musicdb.ui.song.SongListFragment;
 @Component(modules = {
         AndroidSupportInjectionModule.class,
         ApplicationModule.class,
-        RoomModule.class
+        RoomModule.class,
+        ArtistListFragmentModule.class
 })
 public interface ApplicationComponent {
 

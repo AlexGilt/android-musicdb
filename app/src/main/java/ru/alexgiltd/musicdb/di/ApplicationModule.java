@@ -23,7 +23,7 @@ import ru.alexgiltd.musicdb.data.repository.Repository;
 import ru.alexgiltd.musicdb.data.repository.RepositoryImpl;
 
 @Module
-public abstract class ApplicationModule {
+abstract class ApplicationModule {
 
     @Provides
     @Singleton
@@ -58,14 +58,14 @@ public abstract class ApplicationModule {
 
     @Binds
     @Singleton
-    abstract Repository bindRepository(RepositoryImpl repository);
-
-    @Binds
-    @Singleton
     abstract LocalDataSource bindLocalRepository(LocalDataSourceImpl repository);
 
     @Binds
     @Singleton
     abstract RemoteDataSource bindRemoteRepository(RemoteDataSourceImpl repository);
+
+    @Binds
+    @Singleton
+    abstract Repository bindRepository(RepositoryImpl repository);
 
 }
