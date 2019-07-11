@@ -9,18 +9,15 @@ import dagger.Component;
 import dagger.android.support.AndroidSupportInjectionModule;
 import ru.alexgiltd.musicdb.App;
 import ru.alexgiltd.musicdb.di.fragment.ArtistDetailsFragmentComponent;
-import ru.alexgiltd.musicdb.di.fragment.ArtistListFragmentModule;
-import ru.alexgiltd.musicdb.di.fragment.SongListFragmentModule;
-import ru.alexgiltd.musicdb.ui.artist.ArtistDetailsActivity;
-import ru.alexgiltd.musicdb.ui.song.SongDetailFragment;
+import ru.alexgiltd.musicdb.di.fragment.FactoryInjectorModule;
+import ru.alexgiltd.musicdb.di.fragment.SongDetailsFragmentComponent;
 
 @Singleton
 @Component(modules = {
         AndroidSupportInjectionModule.class,
         ApplicationModule.class,
         RoomModule.class,
-        ArtistListFragmentModule.class,
-        SongListFragmentModule.class
+        FactoryInjectorModule.class
 })
 public interface ApplicationComponent {
 
@@ -31,9 +28,6 @@ public interface ApplicationComponent {
 
     void inject(App application);
 
-    void inject(SongDetailFragment fragment);
-
-    void inject(ArtistDetailsActivity activity);
-
-    ArtistDetailsFragmentComponent.Factory ArtistDetailsFragmentComponentFactory();
+    ArtistDetailsFragmentComponent.Factory artistDetailsFragmentComponentFactory();
+    SongDetailsFragmentComponent.Factory songDetailsFragmentComponentFactory();
 }

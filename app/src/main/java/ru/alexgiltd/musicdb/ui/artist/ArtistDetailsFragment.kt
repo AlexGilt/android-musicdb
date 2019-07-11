@@ -37,7 +37,7 @@ class ArtistDetailsFragment : MvpAppCompatFragment(), ArtistDetailsView {
     fun providePresenter(): ArtistDetailsPresenter = presenterProvider.get()
 
     override fun onAttach(context: Context) {
-        App.appComponent.ArtistDetailsFragmentComponentFactory()
+        App.appComponent.artistDetailsFragmentComponentFactory()
                 .create(arguments?.getString(ARTIST_DETAILS_ARG_STRING))
                 .inject(this)
         super.onAttach(context)

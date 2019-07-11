@@ -76,7 +76,7 @@ class SongListFragment : MvpAppCompatFragment(), SongListView {
     }
 
     override fun openSongDetails(track: TrackModel) {
-        SongDetailActivity.start(requireActivity(), track.name, track.trackOwner.name)
+        SongDetailsActivity.start(requireActivity(), track.name, track.trackOwner.name)
     }
 
     companion object {

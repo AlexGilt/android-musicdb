@@ -7,4 +7,4 @@ import javax.inject.Qualifier;
 
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ArtistName {}
+public @interface SongName {}

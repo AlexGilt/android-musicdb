@@ -6,10 +6,13 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface SongDetailsView : MvpView {
-
     fun showError()
 
     fun showSongName(songName: String)
 
     fun showSongImage(songImageUrl: String)
+
+    fun onStartLoading()
+
+    fun onFinishLoading()
 }
