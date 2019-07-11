@@ -2,12 +2,13 @@ package ru.alexgiltd.musicdb.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.alexgiltd.musicdb.R
 import ru.alexgiltd.musicdb.ui.artist.ArtistListFragment
 import ru.alexgiltd.musicdb.ui.home.HomeFragment
 import ru.alexgiltd.musicdb.ui.song.SongListFragment
+import ru.alexgiltd.musicdb.util.openFragmentWithBackStack
+import ru.alexgiltd.musicdb.util.openFragmentWithoutBackStack
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            openFragment(HomeFragment.newInstance(), HOME_FRAGMENT)
+            openFragmentWithoutBackStack(HomeFragment.newInstance(), HOME_FRAGMENT)
         }
 
         initBottomNavigation()
@@ -26,15 +27,15 @@ class MainActivity : AppCompatActivity() {
         main_bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home_menu -> {
-                    openFragment(HomeFragment.newInstance(), HOME_FRAGMENT)
+                    openFragmentWithBackStack(HomeFragment.newInstance(), HOME_FRAGMENT)
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.artists_menu -> {
-                    openFragment(ArtistListFragment.newInstance(), ARTIST_LIST_FRAGMENT)
+                    openFragmentWithBackStack(ArtistListFragment.newInstance(), ARTIST_LIST_FRAGMENT)
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.songs_menu -> {
-                    openFragment(SongListFragment.newInstance(), SONG_LIST_FRAGMENT)
+                    openFragmentWithBackStack(SongListFragment.newInstance(), SONG_LIST_FRAGMENT)
                     return@setOnNavigationItemSelectedListener true
                 }
                 else -> false
@@ -43,23 +44,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-
         const val HOME_FRAGMENT = "homeFragment"
         const val ARTIST_LIST_FRAGMENT = "artistListFragment"
         const val SONG_LIST_FRAGMENT = "songFragment"
-
-        fun AppCompatActivity.openFragment(fragment: Fragment, fragmentTag: String) {
-
-            val fragmentManager = supportFragmentManager
-
-            var createdFragment = fragmentManager.findFragmentByTag(fragmentTag)
-            if (createdFragment == null) {
-                createdFragment = fragment
-            }
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, createdFragment, fragmentTag)
-                    .addToBackStack(null)
-                    .commitAllowingStateLoss()
-        }
     }
 }

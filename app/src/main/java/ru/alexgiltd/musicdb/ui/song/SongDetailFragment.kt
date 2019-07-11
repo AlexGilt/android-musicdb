@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.google.android.material.snackbar.Snackbar
-import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_song_details.*
 import ru.alexgiltd.musicdb.App
@@ -54,11 +53,7 @@ class SongDetailFragment : MvpAppCompatFragment(), SongDetailsView {
                 .load(songImageUrl)
                 .fit()
                 .centerCrop(Gravity.TOP)
-                .into(image_song_details, object : Callback.EmptyCallback() {
-                    override fun onSuccess() {
-
-                    }
-                })
+                .into(image_song_details)
     }
 
     override fun showError() {
@@ -67,15 +62,17 @@ class SongDetailFragment : MvpAppCompatFragment(), SongDetailsView {
     }
 
     companion object {
-        const val SONG_DETAILS_ARG = "song_details_arg_name"
+        val TAG: String = SongDetailFragment::class.java.simpleName
+        const val SONG_DETAILS_ARG_SONG_NAME = "song_details_arg_name"
+        const val SONG_DETAILS_ARG_ARTIST_NAME = "song_details_arg_artist_name"
 
         @JvmStatic
-        fun newInstance(songName: String): SongDetailFragment {
-            val bundle = Bundle()
-            bundle.putString(SONG_DETAILS_ARG, songName)
-
+        fun newInstance(songName: String, artistName: String): SongDetailFragment {
+            val data = Bundle()
+            data.putString(SONG_DETAILS_ARG_SONG_NAME, songName)
+            data.putString(SONG_DETAILS_ARG_ARTIST_NAME, artistName)
             val fragment = SongDetailFragment()
-            fragment.arguments = bundle
+            fragment.arguments = data
             return fragment
         }
     }

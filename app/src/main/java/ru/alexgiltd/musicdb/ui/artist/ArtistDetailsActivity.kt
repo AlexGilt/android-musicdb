@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import ru.alexgiltd.musicdb.R
+import ru.alexgiltd.musicdb.util.openFragmentWithoutBackStack
 import timber.log.Timber
 
 
@@ -14,23 +15,18 @@ class ArtistDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_artist_details)
 
-        val extras = intent?.extras
-        if (extras == null) {
+        val receivedData = intent?.extras
+        if (receivedData != null) {
+
+            val fragment = ArtistDetailsFragment.newInstance(
+                    receivedData.getString(ArtistDetailsFragment.ARTIST_DETAILS_ARG_STRING)!!
+            )
+            openFragmentWithoutBackStack(fragment, ArtistDetailsFragment.TAG)
+
+        } else {
             Timber.e("onCreate: extras is null")
             finish()
         }
-
-        val fragment = ArtistDetailsFragment.newInstance(
-                extras?.getString(ArtistDetailsFragment.ARTIST_DETAILS_ARG_STRING)!!
-        )
-
-        val fragmentManager = supportFragmentManager
-
-        val createdFragment = fragmentManager.findFragmentByTag(ArtistDetailsFragment.TAG) ?: fragment
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, createdFragment, ArtistDetailsFragment.TAG)
-                .commit()
     }
 
     companion object {
