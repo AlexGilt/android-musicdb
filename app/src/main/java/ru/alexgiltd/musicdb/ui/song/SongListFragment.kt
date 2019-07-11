@@ -1,6 +1,7 @@
 package ru.alexgiltd.musicdb.ui.song
 
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.google.android.material.snackbar.Snackbar
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_song_list.*
-import ru.alexgiltd.musicdb.App
 import ru.alexgiltd.musicdb.R
 import ru.alexgiltd.musicdb.model.TrackModel
 import ru.alexgiltd.musicdb.presentation.song.SongListPresenter
@@ -32,10 +33,9 @@ class SongListFragment : MvpAppCompatFragment(), SongListView {
     @ProvidePresenter
     fun providePresenter(): SongListPresenter? = presenterProvider.get()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        App.appComponent
-                .inject(this)
-        super.onCreate(savedInstanceState)
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -43,9 +43,12 @@ class SongListFragment : MvpAppCompatFragment(), SongListView {
             inflater.inflate(R.layout.fragment_song_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         toolbar.title = view.context.getString(R.string.songs_title_menu)
 
+        initRecycler()
+    }
+
+    private fun initRecycler() {
         recycler_song_list.layoutManager = LinearLayoutManager(requireActivity())
         songsAdapter.onItemClickListener = presenter::onSongsItemClicked
         recycler_song_list.adapter = songsAdapter
@@ -78,8 +81,6 @@ class SongListFragment : MvpAppCompatFragment(), SongListView {
 
     companion object {
         @JvmStatic
-        fun newInstance(): SongListFragment {
-            return SongListFragment()
-        }
+        fun newInstance(): SongListFragment = SongListFragment()
     }
 }
