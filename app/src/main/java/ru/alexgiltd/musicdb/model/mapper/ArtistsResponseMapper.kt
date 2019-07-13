@@ -1,20 +1,20 @@
 package ru.alexgiltd.musicdb.model.mapper
 
 import ru.alexgiltd.musicdb.model.SimpleArtistModel
+import ru.alexgiltd.musicdb.model.remote.artists.ArtistDTO
 import ru.alexgiltd.musicdb.model.remote.artists.ArtistsResponse
 
-fun ArtistsResponse.mapToSimplifiedArtistModelList(): List<SimpleArtistModel> {
+fun mapArtistsResponseToSimpleArtistModelList(r: ArtistsResponse): List<SimpleArtistModel> {
+    return r.artists.artist.map(::mapArtistDtoToSimpleArtistModel)
+}
 
-    val artists = artists.artist.map {
-        SimpleArtistModel(
-                mbid = it.mbid,
-                name = it.name,
-                url = it.url,
-                images = it.image.associate { imageDTO ->
-                    Pair(imageDTO.size, imageDTO.text)
-                }
-        )
-    }
-
-    return artists
+private fun mapArtistDtoToSimpleArtistModel(artistDto: ArtistDTO): SimpleArtistModel {
+    return SimpleArtistModel(
+            mbid = artistDto.mbid,
+            name = artistDto.name,
+            url = artistDto.url,
+            images = artistDto.image.associate { imageDTO ->
+                Pair(imageDTO.size, imageDTO.text)
+            }
+    )
 }

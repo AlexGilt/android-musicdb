@@ -4,14 +4,17 @@ import ru.alexgiltd.musicdb.model.SimpleArtistModel
 import ru.alexgiltd.musicdb.model.TrackDetailsModel
 import ru.alexgiltd.musicdb.model.remote.trackinfo.TrackInfoResponse
 
-fun TrackInfoResponse.mapToTrackDetailsModel(): TrackDetailsModel = TrackDetailsModel(
-        name = trackInfoDTO.name,
-        mbid = trackInfoDTO.mbid,
-        simpleArtistModel = SimpleArtistModel(
-                trackInfoDTO.artist.mbid,
-                trackInfoDTO.artist.name,
-                trackInfoDTO.artist.url,
-                null
-        ),
-        summary = trackInfoDTO.wiki.summary,
-        content = trackInfoDTO.wiki.content)
+fun mapTrackInfoResponseToTrackDetailsModel(r: TrackInfoResponse): TrackDetailsModel {
+    return TrackDetailsModel(
+            name = r.trackInfoDTO.name,
+            mbid = r.trackInfoDTO.mbid,
+            simpleArtistModel = SimpleArtistModel(
+                    name = r.trackInfoDTO.artist.name,
+                    mbid = r.trackInfoDTO.artist.mbid,
+                    url = r.trackInfoDTO.artist.url,
+                    images = null
+            ),
+            summary = r.trackInfoDTO.wiki.summary,
+            content = r.trackInfoDTO.wiki.content
+    )
+}

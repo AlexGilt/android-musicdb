@@ -36,4 +36,8 @@ interface LastFmService {
     @GET("$END_POINT&$GET_TRACK_INFO_METHOD")
     fun getTrackInfoByName(@Query("artist") artistName: String,
                            @Query("track") trackName: String): Single<TrackInfoResponse>
+
+    class ApiErrorException(val errorCode: Int, val errorMessage: String)
+        : RuntimeException("Error has occurred on server: " +
+            "Error code: $errorCode, message: $errorMessage")
 }

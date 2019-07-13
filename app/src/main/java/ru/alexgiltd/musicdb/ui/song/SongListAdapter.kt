@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import ru.alexgiltd.musicdb.R
 import ru.alexgiltd.musicdb.model.TrackModel
-import ru.alexgiltd.musicdb.util.Constants.LARGE_IMAGE
 
 class SongListAdapter : ListAdapter<TrackModel, SongListAdapter.SongsViewHolder>(ITEM_CALLBACK) {
 
@@ -44,7 +43,7 @@ class SongListAdapter : ListAdapter<TrackModel, SongListAdapter.SongsViewHolder>
             artistNameText.text = track.trackOwner.name
 
             Picasso.get()
-                    .load(track.images[LARGE_IMAGE])
+                    .load(track.image)
                     .fit()
                     .centerCrop()
                     .into(songImage)
