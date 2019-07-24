@@ -18,51 +18,46 @@ class ArtistListPresenter @Inject constructor(private val repository: Repository
     private val artists: MutableList<ArtistModel> = ArrayList()
 
     override fun onFirstViewAttach() {
-
-        loadArtistList()
+        loadArtists()
     }
 
     fun onItemClicked(artistDetailsModel: ArtistModel) {
         viewState.openArtistDetails(artistDetailsModel)
     }
 
-    private fun loadArtistList() {
-
+    private fun loadArtists() {
         val disposable = repository.getArtists(10)
                 .flatMap { list ->
                     Observable.fromIterable(list)
                             .concatMap { simpleArtistModel ->
                                 if (simpleArtistModel.mbid.isEmpty())
                                     repository.getArtistDetailsByName(simpleArtistModel.name)
-                                            .toObservable()
                                             .subscribeOn(Schedulers.io())
                                 else
                                     repository.getArtistDetailsByMbid(simpleArtistModel.mbid)
-                                            .toObservable()
                                             .subscribeOn(Schedulers.io())
                             }
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.onStartLoading() }
-                .subscribe(
-                        { artistModel ->
-                            artists.add(artistModel)
-                            viewState.showArtists(ArrayList(artists))
-                        },
-                        { error ->
-                            viewState.onFinishLoading()
-                            viewState.showError(error.message!!)
-                            Timber.e(error, "loadArtistList(): ")
-                        },
-                        {
-                            viewState.onFinishLoading()
-                            Timber.d("loadArtistList(): onComplete()")
-                        }
-                )
+                .subscribe(this::doOnNext, this::doOnError, this::doOnComplete)
 
         unsubscribeOnDestroy(disposable)
-
     }
 
+    private fun doOnNext(artistModel: ArtistModel) {
+        artists.add(artistModel)
+        viewState.showArtists(ArrayList(artists))
+    }
+
+    private fun doOnError(throwable: Throwable) {
+        viewState.onFinishLoading()
+        viewState.showError(throwable.message!!)
+        Timber.e(throwable, "loadArtists(): ")
+    }
+
+    private fun doOnComplete() {
+        viewState.onFinishLoading()
+    }
 }

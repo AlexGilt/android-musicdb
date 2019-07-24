@@ -14,8 +14,8 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.alexgiltd.musicdb.BuildConfig;
+import ru.alexgiltd.musicdb.data.local.InMemoryCacheDataSource;
 import ru.alexgiltd.musicdb.data.local.LocalDataSource;
-import ru.alexgiltd.musicdb.data.local.LocalDataSourceImpl;
 import ru.alexgiltd.musicdb.data.remote.RemoteDataSource;
 import ru.alexgiltd.musicdb.data.remote.RemoteDataSourceImpl;
 import ru.alexgiltd.musicdb.data.remote.api.LastFmService;
@@ -62,14 +62,14 @@ abstract class ApplicationModule {
 
     @Binds
     @Singleton
-    abstract LocalDataSource bindLocalRepository(LocalDataSourceImpl repository);
-
-    @Binds
-    @Singleton
     abstract RemoteDataSource bindRemoteRepository(RemoteDataSourceImpl repository);
 
     @Binds
     @Singleton
     abstract Repository bindRepository(RepositoryImpl repository);
+
+    @Binds
+    @Singleton
+    abstract LocalDataSource bindInMemoryCache(InMemoryCacheDataSource inMemoryCacheDataSource);
 
 }

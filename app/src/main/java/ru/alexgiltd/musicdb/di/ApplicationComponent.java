@@ -16,7 +16,6 @@ import ru.alexgiltd.musicdb.di.fragment.SongDetailsFragmentComponent;
 @Component(modules = {
         AndroidSupportInjectionModule.class,
         ApplicationModule.class,
-        RoomModule.class,
         FactoryInjectorModule.class
 })
 public interface ApplicationComponent {

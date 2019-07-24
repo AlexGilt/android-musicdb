@@ -1,7 +1,6 @@
 package ru.alexgiltd.musicdb.data.local
 
 import io.reactivex.Observable
-import io.reactivex.Single
 import ru.alexgiltd.musicdb.model.ArtistModel
 import ru.alexgiltd.musicdb.model.SimpleArtistModel
 
@@ -13,6 +12,8 @@ interface LocalDataSource {
 
     fun addArtistDetails(artistModel: ArtistModel)
 
-    fun getArtistDetailsByName(artistName: String): Single<ArtistModel>
+    fun getArtistDetailsByMbid(mbid: String): Observable<ArtistModel>
+
+    fun getArtistDetailsByName(artistName: String): Observable<ArtistModel>
 
 }

@@ -1,7 +1,6 @@
 package ru.alexgiltd.musicdb.data.remote
 
 import io.reactivex.Observable
-import io.reactivex.Single
 import ru.alexgiltd.musicdb.data.remote.api.LastFmService
 import ru.alexgiltd.musicdb.model.ArtistModel
 import ru.alexgiltd.musicdb.model.SimpleArtistModel
@@ -32,24 +31,24 @@ class RemoteDataSourceImpl @Inject constructor(
                 .map(::mapTracksResponseToTrackModelList)
     }
 
-    override fun getArtistDetailsByMbid(mbid: String): Single<ArtistModel> {
+    override fun getArtistDetailsByMbid(mbid: String): Observable<ArtistModel> {
         return lastFmService.getArtistInfoByMbid(mbid)
-                .doOnSuccess(this::throwExceptionIfApiErrorOccurred)
+                .doOnNext(this::throwExceptionIfApiErrorOccurred)
                 .map(::mapToArtistDetailModel)
     }
 
-    override fun getArtistDetailsByName(artistName: String): Single<ArtistModel> {
+    override fun getArtistDetailsByName(artistName: String): Observable<ArtistModel> {
         return lastFmService.getArtistInfoByName(artistName)
-                .doOnSuccess(this::throwExceptionIfApiErrorOccurred)
+                .doOnNext(this::throwExceptionIfApiErrorOccurred)
                 .map(::mapToArtistDetailModel)
     }
 
     override fun getTrackDetailsByName(
             artistName: String,
             trackName: String
-    ): Single<TrackDetailsModel> {
+    ): Observable<TrackDetailsModel> {
         return lastFmService.getTrackInfoByName(artistName, trackName)
-                .doOnSuccess(this::throwExceptionIfApiErrorOccurred)
+                .doOnNext(this::throwExceptionIfApiErrorOccurred)
                 .map(::mapTrackInfoResponseToTrackDetailsModel)
     }
 

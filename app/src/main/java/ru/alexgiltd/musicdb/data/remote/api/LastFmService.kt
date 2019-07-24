@@ -2,7 +2,6 @@ package ru.alexgiltd.musicdb.data.remote.api
 
 
 import io.reactivex.Observable
-import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 import ru.alexgiltd.musicdb.BuildConfig
@@ -25,17 +24,19 @@ interface LastFmService {
     fun getArtistList(@Query("limit") limit: Int): Observable<ArtistsResponse>
 
     @GET("$END_POINT&$GET_ARTIST_INFO_METHOD")
-    fun getArtistInfoByMbid(@Query("mbid") mbid: String): Single<ArtistInfoResponse>
+    fun getArtistInfoByMbid(@Query("mbid") mbid: String): Observable<ArtistInfoResponse>
 
     @GET("$END_POINT&$GET_ARTIST_INFO_METHOD")
-    fun getArtistInfoByName(@Query("artist") artistName: String): Single<ArtistInfoResponse>
+    fun getArtistInfoByName(@Query("artist") artistName: String): Observable<ArtistInfoResponse>
 
     @GET("$END_POINT&$GET_TOP_TRACKS_METHOD")
     fun getTrackList(@Query("limit") limit: Int): Observable<TracksResponse>
 
     @GET("$END_POINT&$GET_TRACK_INFO_METHOD")
-    fun getTrackInfoByName(@Query("artist") artistName: String,
-                           @Query("track") trackName: String): Single<TrackInfoResponse>
+    fun getTrackInfoByName(
+            @Query("artist") artistName: String,
+            @Query("track") trackName: String
+    ): Observable<TrackInfoResponse>
 
     class ApiErrorException(val errorCode: Int, val errorMessage: String)
         : RuntimeException("Error has occurred on server: " +
